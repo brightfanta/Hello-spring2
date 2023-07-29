@@ -5,11 +5,12 @@ import hello.hello_spring.repository.MemberRepository;
 import hello.hello_spring.repository.MemoryMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -25,11 +26,20 @@ public class MemberService {
 //        result.ifPresent(m -> {
 //            throw new IllegalStateException("이미 존재하는 회원입니다.");
 //        });
+        /*long start = System.currentTimeMillis();*/
 
-        validateDuplicateMember(member);
+//        try{
+            validateDuplicateMember(member);
+            memberRepository.save(member);
+            return member.getId();
+        /*} finally {
+            long finish = System.currentTimeMillis();
+            long timeMs = finish - start;
+            System.out.println("join = " + timeMs + "ms");
+        }*/
 
-        memberRepository.save(member);
-        return member.getId();
+
+
     }
 
     private void validateDuplicateMember(Member member) {
